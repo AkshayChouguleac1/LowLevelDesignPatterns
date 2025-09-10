@@ -1,0 +1,75 @@
+package BehavioralDesignPatterns.MomentoDesignPattern;
+
+//Memento Class - Stores the state
+class TextMemento {
+ private final String state;
+
+ public TextMemento(String state) {
+     this.state = state;
+ }
+
+ public String getState() {
+     return state;
+ }
+}
+
+//Originator Class - Text Editor
+class TextEditor {
+ private StringBuilder content = new StringBuilder();
+
+ public void write(String text) {
+     content.append(text);
+ }
+
+ public String getContent() {
+     return content.toString();
+ }
+
+ // Save current state into a Memento
+ public TextMemento save() {
+     return new TextMemento(content.toString());
+ }
+
+ // Restore state from a Memento
+ public void restore(TextMemento memento) {
+     content = new StringBuilder(memento.getState());
+ }
+}
+
+//Caretaker Class - manages history of mementos
+class History {
+ private java.util.Stack<TextMemento> history = new java.util.Stack<>();
+
+ public void save(TextEditor editor) {
+     history.push(editor.save());
+ }
+
+ public void undo(TextEditor editor) {
+     if (!history.isEmpty()) {
+         editor.restore(history.pop());
+     }
+ }
+}
+
+//Demo
+public class MementoPatternDemo {
+ public static void main(String[] args) {
+     TextEditor editor = new TextEditor();
+     History history = new History();
+
+     editor.write("Hello ");
+     history.save(editor);   // Save state 1
+
+     editor.write("World!");
+     history.save(editor);   // Save state 2
+
+     editor.write(" Extra text.");
+     System.out.println("Current content: " + editor.getContent());
+
+     history.undo(editor);   // Undo last write
+     System.out.println("After undo: " + editor.getContent());
+
+     history.undo(editor);   // Undo again
+     System.out.println("After second undo: " + editor.getContent());
+ }
+}
