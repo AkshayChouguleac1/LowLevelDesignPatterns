@@ -1,0 +1,37 @@
+// Implementation side
+interface Device {
+    void turnOn();
+    void turnOff();
+}
+
+class TV implements Device {
+    public void turnOn() { System.out.println("TV ON"); }
+    public void turnOff() { System.out.println("TV OFF"); }
+}
+
+class Radio implements Device {
+    public void turnOn() { System.out.println("Radio ON"); }
+    public void turnOff() { System.out.println("Radio OFF"); }
+}
+
+// Abstraction side
+abstract class Remote {
+    protected Device device;  // Bridge to Device
+
+    public Remote(Device device) {
+        this.device = device;
+    }
+
+    public abstract void powerOn();
+    public abstract void powerOff();
+}
+
+// Refined Abstraction
+class BasicRemote extends Remote {
+    public BasicRemote(Device device) {
+        super(device);
+    }
+
+    public void powerOn() { device.turnOn(); }
+    public void powerOff() { device.turnOff(); }
+}
