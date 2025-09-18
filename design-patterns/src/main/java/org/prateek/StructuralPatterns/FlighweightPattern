@@ -1,0 +1,61 @@
+// Flyweight
+interface Tree {
+    void draw(int x, int y); // x, y = extrinsic state
+}
+
+// Concrete Flyweight
+class TreeType implements Tree {
+    private String name;   // intrinsic
+    private String color;  // intrinsic
+    private String texture; // intrinsic
+
+    public TreeType(String name, String color, String texture) {
+        this.name = name;
+        this.color = color;
+        this.texture = texture;
+    }
+
+    @Override
+    public void draw(int x, int y) {
+        System.out.println("Drawing " + name + " tree at (" + x + ", " + y + 
+                           ") with color " + color + " and texture " + texture);
+    }
+}
+
+// Flyweight Factory
+import java.util.HashMap;
+import java.util.Map;
+
+class TreeFactory {
+    private static Map<String, TreeType> treeTypes = new HashMap<>();
+
+    public static TreeType getTreeType(String name, String color, String texture) {
+        String key = name + "-" + color + "-" + texture;
+        if (!treeTypes.containsKey(key)) {
+            treeTypes.put(key, new TreeType(name, color, texture));
+            System.out.println("Created new TreeType: " + key);
+        }
+        return treeTypes.get(key);
+    }
+}
+
+// Client
+public class FlyweightDemo {
+    public static void main(String[] args) {
+        Tree oak1 = TreeFactory.getTreeType("Oak", "Green", "Rough");
+        oak1.draw(10, 20);
+
+        Tree oak2 = TreeFactory.getTreeType("Oak", "Green", "Rough");
+        oak2.draw(30, 40);
+
+        Tree pine = TreeFactory.getTreeType("Pine", "DarkGreen", "Smooth");
+        pine.draw(50, 60);
+    }
+}
+
+OUTPUT ////////////////////////////////////////////////////////////////////////////////
+Created new TreeType: Oak-Green-Rough
+Drawing Oak tree at (10, 20) with color Green and texture Rough
+Drawing Oak tree at (30, 40) with color Green and texture Rough
+Created new TreeType: Pine-DarkGreen-Smooth
+Drawing Pine tree at (50, 60) with color DarkGreen and texture Smooth
