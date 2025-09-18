@@ -1,0 +1,67 @@
+// 1. Component
+interface FileSystem {
+    void showDetails();
+}
+
+// 2. Leaf
+class File implements FileSystem {
+    private String name;
+
+    public File(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("File: " + name);
+    }
+}
+
+// 3. Composite
+import java.util.ArrayList;
+import java.util.List;
+
+class Folder implements FileSystem {
+    private String name;
+    private List<FileSystem> contents = new ArrayList<>();
+
+    public Folder(String name) {
+        this.name = name;
+    }
+
+    public void add(FileSystem item) {
+        contents.add(item);
+    }
+
+    public void remove(FileSystem item) {
+        contents.remove(item);
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("Folder: " + name);
+        for (FileSystem item : contents) {
+            item.showDetails();
+        }
+    }
+}
+
+// 4. Client
+public class CompositePatternDemo {
+    public static void main(String[] args) {
+        FileSystem file1 = new File("resume.docx");
+        FileSystem file2 = new File("photo.png");
+        FileSystem file3 = new File("notes.txt");
+
+        Folder subFolder = new Folder("Documents");
+        subFolder.add(file1);
+        subFolder.add(file2);
+
+        Folder rootFolder = new Folder("Root");
+        rootFolder.add(subFolder);
+        rootFolder.add(file3);
+
+        // Client treats both File and Folder uniformly
+        rootFolder.showDetails();
+    }
+}
